@@ -1,102 +1,36 @@
-﻿
-@* @{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "homework1";
 }
 
-<h1>Ajax Homework</h1>
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    <div  class="col">
-        <div class="card h-100">
-            <img id="img1" src="" class="card-img-top" alt="">
-            <div  class="card-body">
-                <p id="p1" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-            <div class="card-footer">
-                <small id="foot1" class="text-body-secondary">Last updated 3 mins ago</small>
-            </div>
-        </div>
-    </div>
-    <div id="div2" class="col">
-        <div class="card h-100">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-body-secondary">Last updated 3 mins ago</small>
-            </div>
-        </div>
-    </div>
-    <div id="div3" class="col">
-        <div class="card h-100">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-body-secondary">Last updated 3 mins ago</small>
-            </div>
-        </div>
-    </div>
-</div>
-@section Scripts{
-    <script src="~/js/travel.js"></script>
-    <script>
-        console.log(spots.CommonFormat.Section);
-        const thediv1 = document.querySelector('#img1');
-        const thediv2 = document.querySelector('#p1');
-        const thediv3 = document.querySelector('#foot1');
-        const travels = spots.CommonFormat.Section[0].stitle
-        const travelx = spots.CommonFormat.Section[0].xbody;
-        const travelf = spots.CommonFormat.Section[0].file.img[0].text;
-        
-        thediv1.src = travelf;
-        thediv2.textContent = travelx;
-        thediv3.textContent = travels;
-    </script>
-} *@
-    ViewData["Title"] = "Homework1";
-}
-
-<h1>Homework1</h1>
-
-<div class="card-group" id="cards"></div>
+<h1>homework1</h1>
+<div id="cardgroup" class="row row-cols-1 row-cols-md-3 g-4"></div>
 
 @section Scripts {
     <script src="~/js/travel.js"></script>
     <script>
+        const cardgroup = document.getElementById('cardgroup');
         const sections = spots.CommonFormat.Section;
-        const cardHtmlArray = [];
+        const travelhtml = sections.map(section => {
+            // 檢查 section.file 和 section.file.img 是否存在
+            if (section.file && section.file.img && section.file.img[0]) {
+                // 使用 optional chaining (?.) 來避免未定義的錯誤
+                const imgUrl = section.file.img[0]?.text || '';
+                return `<div class="col">
+                            <div class="card h-100">
+                                <img class="card-img-top " src="${imgUrl}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${section.stitle}</h5>
+                                    <p class="card-text">${section.xbody.substring(0, 100)}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">${section.address}</small>
+                                </div>
+                            </div>
+                        </div>`;
+            } 
+        });
 
-        for (let i = 0; i < sections.length; i += 3) {
+        cardgroup.innerHTML = travelhtml.join("");
 
-            const rowHtml = sections.slice(i, i + 3).map(section => {
-
-                return `
-                                    <div class="col-md-4">
-                                        <div class="card mb-4">
-                                            <img class="card-img-top" src="${section.file.img[0].text}">
-                                            <div class="card-body">
-                                            <h5 class="card-title">${section.stitle}</h5>
-                                            <p class="card-text">${section.xbody.substring(0, 100)}</p>
-                                        </div>
-                                        <div class="card-footer">
-                                            <small class="text-muted">${section.address}</small>
-                                        </div>
-                                        </div>
-                                    </div>
-                                `;
-            }).join('');
-
-            // Append the row to #cards
-            cardHtmlArray.push(`<div class="row">${rowHtml}</div>`);
-        }
-
-        $('#cards').html(cardHtmlArray.join(''));
     </script>
 }
-
-
-
-
